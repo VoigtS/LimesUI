@@ -1,8 +1,35 @@
-{
-  "theme": "theme-dark",
-  "endpoint": "https://endpoint",
-  "projectID": "c9f269de-6fae-40ac-8468-b90c609c04c5",
-  "domainID": "9e4ebc1e-3e83-4aa1-a0f6-a3303c96dc9e",
-  "token": "wrouyhyt08q3uya3eoruyhw3el5uykjghasy5obyuqby5a",
-  "canEdit": true
-}
+// SPDX-FileCopyrightText: 2024 SAP SE or an SAP affiliate company
+// SPDX-License-Identifier: Apache-2.0
+
+const path = require("path");
+const fs = require("fs");
+
+module.exports = ({ appPath = "" } = {}) => {
+  const pkg = require(path.resolve(appPath, "package.json"));
+  let secrets;
+  try {
+    if (fs.existsSync(path.resolve(appPath, "secretProps.js"))) {
+      secrets = require(path.resolve(appPath, "secretProps.js"));
+    } else {
+      secrets = require(path.resolve(appPath, "secretProps.json"));
+    }
+  } catch (e) {
+    secrets = {};
+  }
+
+  const appProps = pkg.appProps || {};
+  const props = {};
+  for (let propName in appProps) {
+    let value = appProps[propName];
+    if (typeof value !== "string") value = appProps[propName].value;
+    props[propName] = value;
+  }
+
+  for (let propName in secrets) {
+    if (!props.hasOwnProperty(propName))
+      throw Error(`Secret property ${propName} is not defined in package.json -> appProps`);
+    props[propName] = secrets[propName];
+  }
+
+  return props;
+};
