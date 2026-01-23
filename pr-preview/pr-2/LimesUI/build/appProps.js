@@ -1,0 +1,1 @@
+export default {"theme":"theme-dark","endpoint":"","projectID":"","domainID":"","token":"","canEdit":false,"embedded":false,"mockAPI":false,"local":false,"quotaProject":"string","quotaAlign":""}
