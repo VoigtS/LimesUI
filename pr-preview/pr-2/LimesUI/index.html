@@ -32,10 +32,9 @@
       }
     </style>
     <script>
-      // automatically reload on build changes
-      const urlParams = new URLSearchParams(window.location.search);
-      const urlParam = urlParams.get('location');
+      const urlParam = new URLSearchParams(window.location.search).get('location');
       if (!urlParam) {
+        // automatically reload on build changes
         new EventSource("/esbuild").addEventListener("change", () => location.reload());
       }
     </script>
@@ -46,7 +45,7 @@
       if(urlParam === 'project' || urlParam === 'domain' || urlParam === 'cluster') {
         ghProps = `config/${urlParam}-appProps.json`;
       }
-      const defaultProps = "appProps.json"
+      const defaultProps = "./build/appProps.json"
       let appProps = ghProps || defaultProps;
 
       fetch(appProps)
