@@ -42,12 +42,17 @@
   <body>
     <script type="module">
       let ghProps = null;
-      if(urlParam === 'project' || urlParam === 'domain' || urlParam === 'cluster') {
-        ghProps = `config/${urlParam}-appProps.json`;
+      if (urlParam === 'project' || urlParam === 'domain' || urlParam === 'cluster') {
+        const allowedPaths = {
+          project: 'config/project-appProps.json',
+          domain: 'config/domain-appProps.json',
+          cluster: 'config/cluster-appProps.json'
+        };
+        ghProps = allowedPaths[urlParam];
       }
-      const defaultProps = "./build/appProps.json"
+      const defaultProps = "./build/appProps.json";
       let appProps = ghProps || defaultProps;
-
+    
       fetch(appProps)
         .then((res) => res.json())
         .catch((error) => {
@@ -65,7 +70,7 @@
           import("./build/quotaPlugin.js").then((app) => {
             app.mount(document.getElementById("quotaPlugin"), { props: props });
           });
-      })
+        });
     </script>
     <div id="quotaPlugin" data-juno-app="limesUI"></div>
     <div id="root" data-juno-app="limesUI"></div>
